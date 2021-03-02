@@ -8,9 +8,11 @@ For example if I had a role called "Football" and a text channel called "Footbal
 
 # Additional Commands
 + ping - This makes the bot respond with "Pong"
-+ role <add/remove> \<role name\> - Bot adds or removes role from user
++ role <add/remove> \<role name\> - Bot adds or removes role from user (only works for selected roles)
 
-
+# Future Features
++ Ability for owner/selected users to allocate more roles for the message emoji react feature.
++ Make a command for owner/selected users where user inputs <role name> <channel name> <emoji> which creates a new text channel and role where only people with the new role can view the new channel. The emoji is then added to the react emoji where users can react with that emoji to the bot to get assigned the new role.
 # Resources
 + Worn off keys Discord
 + https://github.com/AnIdiotsGuide/discordjs-bot-guide 
