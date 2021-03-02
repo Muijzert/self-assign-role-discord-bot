@@ -9,3 +9,8 @@ For example if I had a role called "Football" and a text channel called "Footbal
 # Additional Commands
 + ping - This makes the bot respond with "Pong"
 + role <add/remove> \<role name\> - Bot adds or removes role from user
+
+
+# Resources
++ Worn off keys Discord
++ https://github.com/AnIdiotsGuide/discordjs-bot-guide 
