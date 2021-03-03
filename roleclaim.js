@@ -1,26 +1,20 @@
 const firstMessage = require('./firstMessage')
 const config = require('./config.json')
+const roles = require('./roles.json')
 
 module.exports = client => {
 
     const getEmoji = emojiName =>
      client.emojis.cache.find((emoji) => emoji.name === emojiName)
 
-    const emojis = {
-        apexlegends: 'Apex Legends',
-        csgo : 'CS:GO',
-        fifa : 'Football friends',
-	    valheim :'Valheim'
-    }
-
     const reactions = []
 
     let emojiText = 'Add a reaction to claim a role\nRemove a reaction to remove a role\n\n'
-    for(const key in emojis){
+    for(const key in roles){
         const emoji = getEmoji(key)
         reactions.push(emoji)
 
-        const role = emojis[key]
+        const role = roles[key]
         emojiText += `${emoji} = ${role}\n`
     }
     firstMessage(client, config.channelID, emojiText, reactions)
@@ -33,7 +27,7 @@ module.exports = client => {
         const emoji = reaction._emoji.name
 
         const { guild } = reaction.message
-        const roleName = emojis[emoji]
+        const roleName = roles[emoji]
         if(!roleName){
             return
         }

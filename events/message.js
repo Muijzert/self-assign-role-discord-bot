@@ -1,7 +1,7 @@
 module.exports = (client, message) => {
 
   // Ignores messages not in the current channel
-  if(message.channel.id != client.config.channelID) return;
+  if(message.channel.id != client.config.commandChannelID) return;
   // Ignore all bots
   if (message.author.bot) return;
 
