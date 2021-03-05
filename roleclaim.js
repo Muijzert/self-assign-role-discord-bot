@@ -2,6 +2,8 @@ const firstMessage = require('./firstMessage')
 const config = require('./config.json')
 const roles = require('./roles.json')
 
+const fs = require("fs");
+
 module.exports = client => {
 
     const getEmoji = emojiName =>
@@ -27,6 +29,9 @@ module.exports = client => {
         const emoji = reaction._emoji.name
 
         const { guild } = reaction.message
+
+        // Loads up roles dynamically
+        const roles = JSON.parse(fs.readFileSync("roles.json", 'utf8'));
         const roleName = roles[emoji]
         if(!roleName){
             return
