@@ -7,13 +7,13 @@ exports.run = (client, message, args) => {
     // Or removes a role and a channel
 
     // Command would look like              -> subject add <role/channel name> <emoji>
-    // Command to remove would look like    -> subject remove <emoji>
+    // Command to remove would look like    -> subject remove <emoji> <y/n (delete emoji)>
 
     switch(args[0]){
          // ### ADD ####
         case("add"):
         // A role name could have spaces in it. This concatenates the role name together and leaves out the emoji.
-        let roleName = arrayToString((args.slice(1,args.length - 1))); 
+        let roleName = arrayToString(args.slice(1,args.length - 1)); 
         let emoji = extractEmoji(args[args.length - 1]);
 
         // Checks if emoji is a custom emoji or not
@@ -71,30 +71,57 @@ exports.run = (client, message, args) => {
         // ### REMOVE ###
         case("remove"):
         // TODO
+        // Remove channel
+        // Remove role 
+        // Delete element in json file.
+
+        // extracts emoji and if emoji wants to be deleted from inputted args
+        let tmpEmoji = "";
+        if(args.length == 2){
+            tmpEmoji = extractEmoji(args[args.length - 1])
+        }else if(args.length == 3){
+            tmpEmoji = extractEmoji(args[args.length - 2])
+            let removeEmoji = args[args.length - 1];
+        }else{
+            message.channel.send("Error. Please use the format -> subject remove <emoji> <y/n (delete emoji)>")
+            return;
+        }
+
+
+        fs.readFile('roles.json', 'utf8', function readFileCallback(err, data){
+            if (err){
+                console.log(err);
+            } else {
+            obj = JSON.parse(data);
+            // Adds role and emoji to roles.json
+            let roleName = obj[tmpEmoji];
+            // Updates first message 
+            console.log(tmpEmoji);
+            // Deletes role and channel
+            message.guild.roles.cache.find(role => role.name === roleName).delete();
+            message.guild.channels.cache.find(channel => channel.name === roleName).delete();
+        
+            delete obj[tmpEmoji];
+            json = JSON.stringify(obj, null, 2);
+            // Write to file
+            fs.writeFile('roles.json', json, 'utf8',  function(err) {
+                if(err) {
+                    return console.log(err);
+                }
+                console.log("The file was saved!");
+                });
+        }})
+
+        // Deletes emoji from guild
+        if(removeEmoji == 'y'){
+            message.guild.emojis.cache.find(emoji => emoji.name === tmpEmoji).delete();
+        }
+        
+        
+
     
         break;
     }
-
-    // const roles = JSON.parse(fs.readFileSync("roles.json", 'utf8')).then( roles => {console.log(roles)});
-
-    // const getEmoji = emojiName =>
-    // client.emojis.cache.find((emoji) => emoji.name === emojiName)
-
-    // const reactions = []
-
-    // let emojiText = 'Add a reaction to claim a role\nRemove a reaction to remove a role\n\n'
-    // for(const key in roles){
-    //     const emoji = getEmoji(key)
-    //     reactions.push(emoji)
-
-    //     const role = roles[key]
-    //     emojiText += `${emoji} = ${role}\n`
-    // }
-    // // console.log(roles)
-    // firstMessage(client, config.channelID, emojiText, reactions)
-
-
-
 }
 
 function arrayToString(arr) {
@@ -113,10 +140,8 @@ function extractEmoji(emoji) {
     if(emojiSplit.length > 1){
         return emojiSplit[1];
     }else{
-
         return emoji;
     }
-
 }
 
 function createChannel(message, newRole) {
@@ -137,6 +162,8 @@ function createChannel(message, newRole) {
 
         }).catch(console.error);                
 }
+
+// Updates first message where users can react to bot message to assign themselves roles
 function updateFirstMessage(client, obj){
     const getEmoji = emojiName => client.emojis.cache.find((emoji) => emoji.name === emojiName)
     const reactions = []
