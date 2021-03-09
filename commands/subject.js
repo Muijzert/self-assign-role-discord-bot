@@ -22,7 +22,6 @@ exports.run = (client, message, args) => {
             return;
         }
 
-        
         // CREATE ROLE
         role = message.guild.roles.cache.find(r => r.name === roleName)
         // If role doesn't already exists create role
@@ -77,12 +76,13 @@ exports.run = (client, message, args) => {
 
         // extracts emoji and if emoji wants to be deleted from inputted args
         let tmpEmoji = "";
+        const removeEmoji = "";
         if(args.length == 2){
             tmpEmoji = extractEmoji(args[args.length - 1])
         }else if(args.length == 3){
             tmpEmoji = extractEmoji(args[args.length - 2])
-            let removeEmoji = args[args.length - 1];
-        }else{
+            removeEmoji = args[args.length - 1];
+            // Deletes emoji from guild
             message.channel.send("Error. Please use the format -> subject remove <emoji> <y/n (delete emoji)>")
             return;
         }
@@ -95,12 +95,34 @@ exports.run = (client, message, args) => {
             obj = JSON.parse(data);
             // Adds role and emoji to roles.json
             let roleName = obj[tmpEmoji];
-            // Updates first message 
-            console.log(tmpEmoji);
-            // Deletes role and channel
-            message.guild.roles.cache.find(role => role.name === roleName).delete();
-            message.guild.channels.cache.find(channel => channel.name === roleName).delete();
-        
+            console.log(roleName)
+            if(typeof roleName === undefined){
+                message.channel.send("Error. Subject does not belong in the data base")
+                return;
+            }
+
+            // Finds role
+            const deletingRole = message.guild.roles.cache.find(role => role.name === roleName);
+
+            // Finds channel
+            const channelName = convertStringToChannelName(roleName)
+            console.log(channelName)
+            const deletingChannel = message.guild.channels.cache.find(channel => channel.name === channelName);
+
+
+            // checks that channel and role exist
+            if(typeof deletingRole != undefined && typeof deletingChannel != undefined){
+                // Deletes channel & role
+                deletingChannel.delete();
+                deletingRole.delete();
+            }else{
+                // invalid role or channel so doesn't delete anything
+                message.channel.send("Error. Role or channel spelt incorrectly.")
+                return;
+            }
+            // Deletes channel
+
+
             delete obj[tmpEmoji];
             json = JSON.stringify(obj, null, 2);
             // Write to file
@@ -111,15 +133,12 @@ exports.run = (client, message, args) => {
                 console.log("The file was saved!");
                 });
         }})
-
-        // Deletes emoji from guild
+        // Remove emoji
         if(removeEmoji == 'y'){
             message.guild.emojis.cache.find(emoji => emoji.name === tmpEmoji).delete();
         }
-        
-        
-
-    
+        //TODO
+        // Make bot unreact from first message about deleted role.
         break;
     }
 }
@@ -167,7 +186,7 @@ function createChannel(message, newRole) {
 function updateFirstMessage(client, obj){
     const getEmoji = emojiName => client.emojis.cache.find((emoji) => emoji.name === emojiName)
     const reactions = []
-
+    
     let emojiText = 'Add a reaction to claim a role\nRemove a reaction to remove a role\n\n'
     for(const key in obj){
         const emoji = getEmoji(key)
@@ -177,4 +196,9 @@ function updateFirstMessage(client, obj){
         emojiText += `${emoji} = ${role}\n`
     }
     firstMessage(client, config.channelID, emojiText, reactions)
+}
+function convertStringToChannelName(name){
+    name = name.replace(/ /g,"-")
+    name = name.toLowerCase();
+    return name;
 }
