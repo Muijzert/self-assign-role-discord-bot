@@ -93,10 +93,10 @@ exports.run = (client, message, args) => {
                 console.log(err);
             } else {
             obj = JSON.parse(data);
-            // Adds role and emoji to roles.json
+            
             let roleName = obj[tmpEmoji];
-            console.log(roleName)
-            if(typeof roleName === undefined){
+
+            if(typeof roleName == "undefined"){
                 message.channel.send("Error. Subject does not belong in the data base")
                 return;
             }
@@ -120,10 +120,11 @@ exports.run = (client, message, args) => {
                 message.channel.send("Error. Role or channel spelt incorrectly.")
                 return;
             }
-            // Deletes channel
-
-
             delete obj[tmpEmoji];
+
+            // Update first message
+            updateFirstMessage(client, obj);
+            
             json = JSON.stringify(obj, null, 2);
             // Write to file
             fs.writeFile('roles.json', json, 'utf8',  function(err) {
@@ -139,6 +140,8 @@ exports.run = (client, message, args) => {
         }
         //TODO
         // Make bot unreact from first message about deleted role.
+        
+        
         break;
     }
 }
