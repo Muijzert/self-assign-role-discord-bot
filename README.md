@@ -10,8 +10,8 @@ For example if I had a role called "Football" and a text channel called "Footbal
 + ping - This makes the bot respond with "Pong"
 + role <add/remove> \<role name\> - Bot adds or removes role from user (only works for selected roles)
 + subject
-+ + <add> <role name> <emoji> - Creates new channel and role with <role name> as both names. Adds and updates role to the self assigning feature and the assosiated emoji is the inputted <emoji>
-+ + <remove> <role name> <y/n (remove emoji)> - Deletes channel and role and can delete assosiated emoji from server as well. Removes role from self assigning bot as well.
++ + add \<role name\> \<emoji\> - Creates new channel and role with <role name> as both names. Adds and updates role to the self assigning feature and the assosiated emoji is the inputted \<emoji\>
++ + remove \<role name\> y/n(remove emoji) - Deletes channel and role and can delete assosiated emoji from server as well. Removes role from self assigning bot as well.
 + help - Sends message to user explaining the commands and features
 
 # Future Features
