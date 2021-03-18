@@ -6,6 +6,30 @@ const addReactions = (message, reactions) => {
   }
 }
 
+const removeAllReactions = (message) => {
+  // TODO
+  // Make make bot remove only their own emojis from first message instead of removing all
+  
+  
+  // const userReactions = message.reactions.cache.filter(reaction => reaction.users.cache.has("208553415813365760"))
+  // console.log(userReactions)
+  // // console.log(message.author.id)
+  // try {
+  //   for (const reaction of userReactions.values()) {
+  //     console.log(reaction)
+  //     reaction.users.remove(message.author.id);
+  //   }
+  // } catch (error) {
+  //   console.error('Failed to remove reactions.');
+  // }
+
+
+
+
+  message.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
+}
+
+
 module.exports = async (client, id, text, reactions = []) => {
   let channel = await client.channels.fetch(id)
   // console.log(channel.name + " CHANNEL")
@@ -20,6 +44,7 @@ module.exports = async (client, id, text, reactions = []) => {
       // Edit the existing message
       for (const message of messages) {
         message[1].edit(text)
+        removeAllReactions(message[1]);
         addReactions(message[1], reactions)
       }
     }
